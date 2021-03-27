@@ -1,0 +1,76 @@
+#Librerías
+
+library(httr)
+library(jsonlite)
+library(plotly)
+
+#1era tabla
+
+repositorio1 = GET("https://api.datamexico.org/tesseract/cubes/imss/aggregate.jsonrecords?drilldowns%5B%5D=Date+Month.Date.Month&measures%5B%5D=Insured+People&measures%5B%5D=Non+Workers&measures%5B%5D=Insured+Employment&measures%5B%5D=Temporary+Urban+Employment&measures%5B%5D=Temporary+Employment+Field&measures%5B%5D=Permanent+Urban+Employment&measures%5B%5D=Permanent+Employment+Field&parents=false&sparse=false")
+rawToChar(repositorio1$content)
+Datos1 = fromJSON(rawToChar(repositorio1$content))
+names(Datos1)
+Datos1 <- Datos1$data
+Datos1 <- Datos1[, -c(1)]
+Datos1 <- data.frame(Datos1)
+
+#2da tabla
+
+repositorio2 = GET("https://api.datamexico.org/tesseract/cubes/dgis_emergency/aggregate.jsonrecords?drilldowns%5B%5D=Date.Date.Date&measures%5B%5D=Average+Attention+Time&parents=false&sparse=false")
+rawToChar(repositorio2$content)
+Datos2 = fromJSON(rawToChar(repositorio2$content))
+names(Datos2)
+Datos2 <- Datos2$data
+Datos2 <- Datos2[, -c(1)]
+Datos2 <- data.frame(Datos2)
+
+#3era tabla
+
+repositorio3 = GET("https://api.datamexico.org/tesseract/cubes/wellness_credits/aggregate.jsonrecords?drilldowns%5B%5D=Geography+Municipality.Geography.State&measures%5B%5D=Credits&parents=false&sparse=false")
+rawToChar(repositorio3$content)
+Datos3 = fromJSON(rawToChar(repositorio3$content))
+names(Datos3)
+Datos3 <- Datos3$data
+Datos3 <- Datos3[, -c(1)]
+Datos3 <- data.frame(Datos3)
+
+
+#1era gráfica
+
+graphic1 = plot_ly(Datos1, x = ~Month, y = ~Insured.People,
+                   name = 'Datos',
+                   type = 'scatter',
+                   mode = 'lines+markers')
+graphic1 %>% layout(title="Datos")
+
+#2da gráfica
+
+graphic2 = plot_ly(Datos1, x = ~Month, y = ~Insured.Employment,
+                   name = 'Datos',
+                   type = 'scatter',
+                   mode = 'lines+markers')
+graphic2 %>% layout(title="Datos")
+
+#3era gráfica
+
+graphic3 = plot_ly(Datos1, x = ~Month, y = ~Non.Workers,
+                   name = 'Datos',
+                   type = 'scatter',
+                   mode = 'lines+markers')
+graphic3 %>% layout(title="Datos")
+
+#4ta gráfica
+
+graphic4 = plot_ly(Datos2, x = ~Date, y = ~Average.Attention.Time,
+                   name = 'Datos',
+                   type = 'scatter',
+                   mode = 'lines+markers')
+graphic4 %>% layout(title="Datos")
+
+#5ta gráfica
+
+graphic5 = plot_ly(Datos3, x = ~State, y = ~Credits,
+                   name = 'Datos',
+                   type = 'scatter',
+                   mode = 'lines+markers')
+graphic5 %>% layout(title="Datos")
